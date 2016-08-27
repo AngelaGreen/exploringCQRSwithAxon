@@ -16,12 +16,13 @@
 <nav class="navbar navbar-default navbar-fixed-top">
     <div class="container">
         <div class="navbar-header">
-            <a class="navbar-brand" href="#">Explore CQRS With Axon Framework</a>
+            <a class="navbar-brand" href="/">Explore CQRS With Axon Framework</a>
         </div>
         <div>
             <ul class="nav navbar-nav">
-                <li class="active"><a href="#">Home</a></li>
-                <li><a href="#">About</a></li>
+                <li class="active"><a href="/">Home</a></li>
+                <li><a href="/events">View Events</a></li>
+                <li><a href="/about">About</a></li>
             </ul>
         </div>
     </div>
