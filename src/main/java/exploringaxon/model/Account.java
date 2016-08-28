@@ -35,9 +35,10 @@ public class Account extends AbstractAnnotatedAggregateRoot {
     }
 
     /**
-     * Business Logic
+     * Business Logic:
      * Cannot debit with a negative amount
-     * Cannot debit with more than a million amount (You laundering money?)
+     * Cannot debit with amount that leaves the account balance in a negative state
+     *
      * @param debitAmount
      */
     public void debit(Double debitAmount) {
@@ -68,9 +69,10 @@ public class Account extends AbstractAnnotatedAggregateRoot {
     }
 
     /**
-     * Business Logic
+     * Business Logic:
      * Cannot credit with a negative amount
-     * Cannot credit with amount that leaves the account balance in a negative state
+     * Cannot credit with more than a million amount (You laundering money?)
+     *
      * @param creditAmount
      */
     public void credit(Double creditAmount) {
