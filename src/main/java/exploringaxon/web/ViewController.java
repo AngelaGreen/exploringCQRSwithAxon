@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.sql.DataSource;
 
 /**
  * Created by Dadepo Aderemi.
@@ -27,11 +27,9 @@ public class ViewController {
     public List<Map<String, Double>> getAccounts() {
 
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-        List<Map<String, Double>> queryResult = jdbcTemplate.query("SELECT * from account_view ORDER BY account_no", (rs, rowNum) -> {
-            return new HashMap<String, Double>() {{
-                put(rs.getString("ACCOUNT_NO"), rs.getDouble("BALANCE"));
-            }};
-        });
+        List<Map<String, Double>> queryResult = jdbcTemplate.query("SELECT * from account_view ORDER BY account_no", (rs, rowNum) -> new HashMap<String, Double>() {{
+            put(rs.getString("ACCOUNT_NO"), rs.getDouble("BALANCE"));
+        }});
 
         return queryResult;
     }

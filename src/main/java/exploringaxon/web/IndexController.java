@@ -3,6 +3,8 @@ package exploringaxon.web;
 import exploringaxon.api.command.CreditAccountCommand;
 import exploringaxon.api.command.DebitAccountCommand;
 import exploringaxon.replay.AccountCreditedReplayEventHandler;
+import org.axonframework.commandhandling.GenericCommandMessage;
+import org.axonframework.commandhandling.callbacks.LoggingCallback;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.eventhandling.replay.ReplayingCluster;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,7 +58,8 @@ public class IndexController {
     @ResponseBody
     public void doCredit(@RequestParam("acc") String accountNumber, @RequestParam("amount") double amount) {
         CreditAccountCommand creditAccountCommandCommand = new CreditAccountCommand(accountNumber, amount);
-        commandGateway.send(creditAccountCommandCommand);
+        GenericCommandMessage<CreditAccountCommand> message = new GenericCommandMessage<>(creditAccountCommandCommand);
+        commandGateway.send(creditAccountCommandCommand, new LoggingCallback(message));
     }
 
     @RequestMapping("/events")

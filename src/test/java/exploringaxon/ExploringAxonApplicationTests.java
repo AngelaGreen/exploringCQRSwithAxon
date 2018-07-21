@@ -5,8 +5,6 @@ import exploringaxon.api.command.DebitAccountCommand;
 import exploringaxon.api.event.AccountCreatedEvent;
 import exploringaxon.api.event.AccountCreditedEvent;
 import exploringaxon.api.event.AccountDebitedEvent;
-import exploringaxon.commandhandler.CreditAccountHandler;
-import exploringaxon.commandhandler.DebitAccountHandler;
 import exploringaxon.model.Account;
 import org.axonframework.test.FixtureConfiguration;
 import org.axonframework.test.Fixtures;
@@ -22,15 +20,12 @@ import org.springframework.test.context.web.WebAppConfiguration;
 public class ExploringAxonApplicationTests {
 
 	private FixtureConfiguration fixture;
-	private String accountNo;
+	private String accountNo = "test-acc";
 
 	@Before
 	public void setUp() {
 		fixture = Fixtures.newGivenWhenThenFixture(Account.class);
-		fixture.registerAnnotatedCommandHandler(new CreditAccountHandler(fixture.getRepository()))
-			   .registerAnnotatedCommandHandler(new DebitAccountHandler(fixture.getRepository()));
-		accountNo = "test-acc";
-	}
+    }
 
 	@Test
 	public void testFirstDeposit() {

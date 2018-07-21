@@ -2,6 +2,7 @@ package exploringaxon;
 
 import exploringaxon.model.Account;
 import org.axonframework.commandhandling.SimpleCommandBus;
+import org.axonframework.commandhandling.annotation.AggregateAnnotationCommandHandler;
 import org.axonframework.commandhandling.gateway.DefaultCommandGateway;
 import org.axonframework.contextsupport.spring.AnnotationDriven;
 import org.axonframework.domain.EventMessage;
@@ -174,5 +175,19 @@ public class AppConfiguration {
         EventSourcingRepository eventSourcingRepository = new EventSourcingRepository(Account.class, jdbcEventStore());
         eventSourcingRepository.setEventBus(clusteringEventBus());
         return eventSourcingRepository;
+    }
+
+    /**
+     * Component that allows an aggregate to directly act as command handlers for commands.
+     *
+     * @return an instance of {@link AggregateAnnotationCommandHandler}
+     */
+    @Bean
+    public AggregateAnnotationCommandHandler aggregateAnnotationCommandHandler(){
+        AggregateAnnotationCommandHandler<Account> handler = new AggregateAnnotationCommandHandler<>(Account.class, eventSourcingRepository());
+        for (String supportedCommand : handler.supportedCommands()) {
+            commandBus().subscribe(supportedCommand, handler);
+        }
+        return handler;
     }
 }

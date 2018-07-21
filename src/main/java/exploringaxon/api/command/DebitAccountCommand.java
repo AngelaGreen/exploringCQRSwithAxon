@@ -1,11 +1,15 @@
 package exploringaxon.api.command;
 
+import org.axonframework.commandhandling.annotation.TargetAggregateIdentifier;
+
 /**
  * Created by Dadepo Aderemi.
  */
 public class DebitAccountCommand {
 
+    @TargetAggregateIdentifier
     private final String account;
+
     private final Double amount;
 
     public DebitAccountCommand(String account, Double amount) {

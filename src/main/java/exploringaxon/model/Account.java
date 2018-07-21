@@ -1,8 +1,11 @@
 package exploringaxon.model;
 
+import exploringaxon.api.command.CreditAccountCommand;
+import exploringaxon.api.command.DebitAccountCommand;
 import exploringaxon.api.event.AccountCreatedEvent;
 import exploringaxon.api.event.AccountCreditedEvent;
 import exploringaxon.api.event.AccountDebitedEvent;
+import org.axonframework.commandhandling.annotation.CommandHandler;
 import org.axonframework.eventsourcing.annotation.AbstractAnnotatedAggregateRoot;
 import org.axonframework.eventsourcing.annotation.AggregateIdentifier;
 import org.axonframework.eventsourcing.annotation.EventSourcingHandler;
@@ -39,10 +42,11 @@ public class Account extends AbstractAnnotatedAggregateRoot {
      * Cannot debit with a negative amount
      * Cannot debit with amount that leaves the account balance in a negative state
      *
-     * @param debitAmount
+     * @param debitAccountCommand
      */
-    public void debit(Double debitAmount) {
-
+    @CommandHandler
+    public void debit(DebitAccountCommand debitAccountCommand) {
+        Double debitAmount = debitAccountCommand.getAmount();
         if (Double.compare(debitAmount, 0.0d) > 0 &&
                 this.balance - debitAmount > -1) {
             /**
@@ -55,7 +59,6 @@ public class Account extends AbstractAnnotatedAggregateRoot {
         } else {
             throw new IllegalArgumentException("Cannot debit with the amount");
         }
-
     }
 
     @EventSourcingHandler
@@ -73,11 +76,13 @@ public class Account extends AbstractAnnotatedAggregateRoot {
      * Cannot credit with a negative amount
      * Cannot credit with more than a million amount (You laundering money?)
      *
-     * @param creditAmount
+     * @param creditAccountCommand
      */
-    public void credit(Double creditAmount) {
-        if (Double.compare(creditAmount, 0.0d) > 0 &&
-                Double.compare(creditAmount, 1000000) < 0) {
+
+    @CommandHandler
+    public void credit(CreditAccountCommand creditAccountCommand) {
+        Double creditAmount = creditAccountCommand.getAmount();
+        if (Double.compare(creditAmount, 0.0d) > 0 && Double.compare(creditAmount, 1000000) < 0) {
             /**
              * Instead of changing the state directly we apply an event
              * that conveys what happened.
