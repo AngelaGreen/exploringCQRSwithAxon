@@ -45,10 +45,16 @@ public class Db {
         transactionTmp.execute(new TransactionCallbackWithoutResult() {
             @Override
             protected void doInTransactionWithoutResult(TransactionStatus status) {
-                UnitOfWork uow = DefaultUnitOfWork.startAndGet();
-                repository.add(new Account("acc-one"));
-                repository.add(new Account("acc-two"));
-                uow.commit();
+                UnitOfWork uow = DefaultUnitOfWork.startAndGet(null);
+                uow.execute(() -> {
+                    try {
+                        repository.newInstance(() -> new Account("acc-one"));
+                        repository.newInstance(() -> new Account("acc-two"));
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+
             }
         });
 
