@@ -4,12 +4,12 @@ import exploringaxon.api.event.AccountCreditedEvent;
 import org.axonframework.eventhandling.EventHandler;
 import org.axonframework.eventhandling.Timestamp;
 import org.axonframework.messaging.Message;
-import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
+import java.time.Instant;
 
 /**
  * Created by Dadepo Aderemi.
@@ -21,7 +21,7 @@ public class AccountCreditedEventHandler {
     DataSource dataSource;
 
     @EventHandler
-    public void handleAccountCreditedEvent(AccountCreditedEvent event, Message eventMessage, @Timestamp DateTime moment) {
+        public void handleAccountCreditedEvent(AccountCreditedEvent event, Message eventMessage, @Timestamp Instant moment) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
 
         // Get the current states as reflected in the event
