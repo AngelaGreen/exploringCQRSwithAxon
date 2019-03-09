@@ -1,9 +1,9 @@
 package exploringaxon.eventhandler;
 
 import exploringaxon.api.event.AccountCreditedEvent;
-import org.axonframework.domain.Message;
-import org.axonframework.eventhandling.annotation.EventHandler;
-import org.axonframework.eventhandling.annotation.Timestamp;
+import org.axonframework.eventhandling.EventHandler;
+import org.axonframework.eventhandling.Timestamp;
+import org.axonframework.messaging.Message;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;

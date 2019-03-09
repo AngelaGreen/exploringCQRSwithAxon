@@ -1,6 +1,6 @@
 package exploringaxon.api.command;
 
-import org.axonframework.commandhandling.annotation.TargetAggregateIdentifier;
+import org.axonframework.commandhandling.TargetAggregateIdentifier;
 
 /**
  * Created by Dadepo Aderemi.

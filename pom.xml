@@ -21,7 +21,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>1.8</java.version>
-		<axon-core.version>2.4.4</axon-core.version>
+		<axon-core.version>3.4.2</axon-core.version>
 	</properties>
 
 	<dependencies>

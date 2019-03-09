@@ -1,9 +1,9 @@
 package exploringaxon.web;
 
 import exploringaxon.model.Account;
-import org.axonframework.repository.Repository;
-import org.axonframework.unitofwork.DefaultUnitOfWork;
-import org.axonframework.unitofwork.UnitOfWork;
+import org.axonframework.commandhandling.model.Repository;
+import org.axonframework.messaging.unitofwork.DefaultUnitOfWork;
+import org.axonframework.messaging.unitofwork.UnitOfWork;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -14,8 +14,8 @@ import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.util.FileSystemUtils;
 
-import java.nio.file.Paths;
 import javax.annotation.PostConstruct;
+import java.nio.file.Paths;
 
 /**
  * Adds the two account types needed.

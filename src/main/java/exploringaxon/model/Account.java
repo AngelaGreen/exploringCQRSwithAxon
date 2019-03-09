@@ -5,10 +5,11 @@ import exploringaxon.api.command.DebitAccountCommand;
 import exploringaxon.api.event.AccountCreatedEvent;
 import exploringaxon.api.event.AccountCreditedEvent;
 import exploringaxon.api.event.AccountDebitedEvent;
-import org.axonframework.commandhandling.annotation.CommandHandler;
-import org.axonframework.eventsourcing.annotation.AbstractAnnotatedAggregateRoot;
-import org.axonframework.eventsourcing.annotation.AggregateIdentifier;
-import org.axonframework.eventsourcing.annotation.EventSourcingHandler;
+import org.axonframework.commandhandling.CommandHandler;
+import org.axonframework.commandhandling.model.AggregateIdentifier;
+import org.axonframework.eventsourcing.EventSourcingHandler;
+
+import static org.axonframework.commandhandling.model.AggregateLifecycle.apply;
 
 /**
  * Entity that models the Account

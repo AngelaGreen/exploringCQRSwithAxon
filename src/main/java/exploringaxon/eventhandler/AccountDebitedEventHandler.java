@@ -1,7 +1,7 @@
 package exploringaxon.eventhandler;
 
 import exploringaxon.api.event.AccountDebitedEvent;
-import org.axonframework.eventhandling.annotation.EventHandler;
+import org.axonframework.eventhandling.EventHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
