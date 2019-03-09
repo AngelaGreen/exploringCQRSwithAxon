@@ -17,7 +17,7 @@ import static org.axonframework.commandhandling.model.AggregateLifecycle.apply;
  * Created by Dadepo Aderemi.
  */
 
-public class Account extends AbstractAnnotatedAggregateRoot {
+public class Account {
     private static final long serialVersionUID = 8723320580782813954L;
 
     @AggregateIdentifier
@@ -114,7 +114,6 @@ public class Account extends AbstractAnnotatedAggregateRoot {
         this.accountNo = id;
     }
 
-    @Override
     public Object getIdentifier() {
         return accountNo;
     }
