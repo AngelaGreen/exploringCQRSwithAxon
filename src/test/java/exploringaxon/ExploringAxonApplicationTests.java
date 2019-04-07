@@ -6,10 +6,11 @@ import exploringaxon.api.event.AccountCreatedEvent;
 import exploringaxon.api.event.AccountCreditedEvent;
 import exploringaxon.api.event.AccountDebitedEvent;
 import exploringaxon.model.Account;
-import org.axonframework.test.FixtureConfiguration;
-import org.axonframework.test.Fixtures;
-import org.junit.*;
-import org.junit.runner.*;
+import org.axonframework.test.aggregate.AggregateTestFixture;
+import org.axonframework.test.aggregate.FixtureConfiguration;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -24,7 +25,7 @@ public class ExploringAxonApplicationTests {
 
 	@Before
 	public void setUp() {
-		fixture = Fixtures.newGivenWhenThenFixture(Account.class);
+		fixture = new AggregateTestFixture<>(Account.class);
     }
 
 	@Test

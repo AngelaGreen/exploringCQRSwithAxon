@@ -5,24 +5,23 @@ import org.axonframework.commandhandling.AggregateAnnotationCommandHandler;
 import org.axonframework.commandhandling.SimpleCommandBus;
 import org.axonframework.commandhandling.gateway.DefaultCommandGateway;
 import org.axonframework.commandhandling.model.Repository;
-import org.axonframework.common.transaction.NoTransactionManager;
-import org.axonframework.eventhandling.EventBus;
-import org.axonframework.eventhandling.EventMessage;
 import org.axonframework.eventsourcing.EventSourcingRepository;
+import org.axonframework.eventsourcing.eventstore.EmbeddedEventStore;
 import org.axonframework.eventsourcing.eventstore.EventStore;
+import org.axonframework.eventsourcing.eventstore.inmemory.InMemoryEventStorageEngine;
+import org.axonframework.spring.config.EnableAxon;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import javax.sql.DataSource;
-import java.util.HashMap;
-import java.util.Map;
+import java.sql.SQLException;
 
 /**
  * Created by Dadepo Aderemi.
  */
 @Configuration
-@AnnotationDriven
+@EnableAxon
 public class AppConfiguration {
 
     @Bean
@@ -36,19 +35,8 @@ public class AppConfiguration {
                 .build();
     }
 
-    /**
-     * An event sourcing implementation needs a place to store events. i.e. The event Store.
-     * In our use case we will be storing our events in database, so we configure
-     * the JdbcEventStore as our EventStore implementation
-     *
-     * It should be noted that Axon allows storing the events
-     * in other persistent mechanism...jdbc, jpa, filesystem etc
-     *
-     * @return the {@link EventStore}
-     */
-    @Bean
-    public EventStore jdbcEventStore() {
-        return new JdbcEventStore(dataSource());
+    @Bean EventStore embeddedEventStore() throws SQLException {
+        return new EmbeddedEventStore(new InMemoryEventStorageEngine());
     }
 
     @Bean
@@ -57,94 +45,6 @@ public class AppConfiguration {
         return simpleCommandBus;
     }
 
-    /**
-     *  A cluster which can be used to "cluster" together event handlers. This implementation is based on
-     * {@link SimpleCluster} and it would be used to cluster event handlers that would listen to events thrown
-     * normally within the application.
-     *
-     * @return an instance of {@link SimpleCluster}
-     */
-    @Bean
-    public Cluster normalCluster() {
-        SimpleCluster simpleCluster = new SimpleCluster("simpleCluster");
-        return simpleCluster;
-    }
-
-    /**
-     *  A cluster which can be used to "cluster" together event handlers. This implementation is based on
-     * {@link SimpleCluster} and it would be used to cluster event handlers that would listen to replayed events.
-     *
-     * As can be seen, the bean is just a simple implementation of {@link SimpleCluster} there is nothing about
-     * it that says it would be able to handle replayed events. The bean definition #replayCluster is what makes
-     * this bean able to handle replayed events.
-     *
-     * @return an instance of {@link SimpleCluster}
-     */
-    @Bean
-    public Cluster replay() {
-        SimpleCluster simpleCluster = new SimpleCluster("replayCluster");
-        return simpleCluster;
-    }
-
-    /**
-     * Takes the #replay() cluster and wraps it with a Replaying Cluser, turning the event handlers that are registered
-     * to be able to pick up events when events are replayed.
-     *
-     * @return an instance of {@link ReplayingCluster}
-     */
-    @Bean
-    public ReplayingCluster replayCluster() {
-        IncomingMessageHandler incomingMessageHandler = new DiscardingIncomingMessageHandler();
-        EventStoreManagement eventStore = (EventStoreManagement) jdbcEventStore();
-        return new ReplayingCluster(replay(), eventStore, new NoTransactionManager(),0,incomingMessageHandler);
-    }
-
-    /**
-     * This configuration registers event handlers with the two defined clusters
-     *
-     * @return an instance of {@link ClusterSelector}
-     */
-    @Bean
-    public ClusterSelector clusterSelector() {
-        Map<String, Cluster> clusterMap = new HashMap<>();
-        clusterMap.put("exploringaxon.eventhandler", normalCluster());
-        clusterMap.put("exploringaxon.replay", replayCluster());
-        return new ClassNamePrefixClusterSelector(clusterMap);
-    }
-
-
-    /**
-     * This replaces the simple event bus that was initially used. The clustering event bus is needed to be able
-     * to route events to event handlers in the clusters. It is configured with a {@link EventBusTerminal} defined
-     * by #terminal(). The EventBusTerminal contains the configuration rules which determines which cluster gets an
-     * incoming event
-     *
-     * @return a {@link ClusteringEventBus} implementation of {@link EventBus}
-     */
-    @Bean
-    public EventBus clusteringEventBus() {
-        ClusteringEventBus clusteringEventBus = new ClusteringEventBus(clusterSelector(), terminal());
-        return clusteringEventBus;
-    }
-
-    /**
-     * An {@link EventBusTerminal} which publishes application domain events onto the normal cluster
-     *
-     * @return an instance of {@link EventBusTerminal}
-     */
-    @Bean
-    public EventBusTerminal terminal() {
-        return new EventBusTerminal() {
-            @Override
-            public void publish(EventMessage... events) {
-                normalCluster().publish(events);
-            }
-            @Override
-            public void onClusterCreated(Cluster cluster) {
-
-            }
-        };
-    }
 
     @Bean
     public DefaultCommandGateway commandGateway() {
@@ -159,9 +59,8 @@ public class AppConfiguration {
      * @return a {@link EventSourcingRepository} implementation of {@link Repository}
      */
     @Bean
-    public Repository<Account> eventSourcingRepository() {
-        EventSourcingRepository eventSourcingRepository = new EventSourcingRepository(Account.class, jdbcEventStore());
-        eventSourcingRepository.setEventBus(clusteringEventBus());
+    public Repository<Account> eventSourcingRepository() throws SQLException {
+        EventSourcingRepository eventSourcingRepository = new EventSourcingRepository(Account.class, embeddedEventStore());
         return eventSourcingRepository;
     }
 
@@ -171,9 +70,9 @@ public class AppConfiguration {
      * @return an instance of {@link AggregateAnnotationCommandHandler}
      */
     @Bean
-    public AggregateAnnotationCommandHandler aggregateAnnotationCommandHandler(){
+    public AggregateAnnotationCommandHandler aggregateAnnotationCommandHandler() throws SQLException {
         AggregateAnnotationCommandHandler<Account> handler = new AggregateAnnotationCommandHandler<>(Account.class, eventSourcingRepository());
-        for (String supportedCommand : handler.supportedCommands()) {
+        for (String supportedCommand : handler.supportedCommandNames()) {
             commandBus().subscribe(supportedCommand, handler);
         }
         return handler;

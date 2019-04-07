@@ -3,11 +3,9 @@ package exploringaxon.web;
 import exploringaxon.api.command.CreditAccountCommand;
 import exploringaxon.api.command.DebitAccountCommand;
 import exploringaxon.replay.AccountCreditedReplayEventHandler;
-import org.axonframework.commandhandling.GenericCommandMessage;
 import org.axonframework.commandhandling.callbacks.LoggingCallback;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -21,9 +19,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class IndexController {
 
-    @Autowired
-    @Qualifier("replayCluster")
-    ReplayingCluster replayCluster;
+//    TODO:Fix in subsequent steps
+//    @Autowired
+//    @Qualifier("replayCluster")
+//    ReplayingCluster replayCluster;
 
     @Autowired
     AccountCreditedReplayEventHandler replayEventHandler;
@@ -57,14 +56,14 @@ public class IndexController {
     @ResponseBody
     public void doCredit(@RequestParam("acc") String accountNumber, @RequestParam("amount") double amount) {
         CreditAccountCommand creditAccountCommandCommand = new CreditAccountCommand(accountNumber, amount);
-        GenericCommandMessage<CreditAccountCommand> message = new GenericCommandMessage<>(creditAccountCommandCommand);
-        commandGateway.send(creditAccountCommandCommand, new LoggingCallback(message));
+        commandGateway.send(creditAccountCommandCommand, LoggingCallback.INSTANCE);
     }
 
-    @RequestMapping("/events")
-    public String doReplay(Model model) {
-        replayCluster.startReplay();
-        model.addAttribute("events",replayEventHandler.getAudit());
-        return "events";
-    }
+//    TODO:Fix in subsequent steps
+//    @RequestMapping("/events")
+//    public String doReplay(Model model) {
+//        replayCluster.startReplay();
+//        model.addAttribute("events",replayEventHandler.getAudit());
+//        return "events";
+//    }
 }

@@ -9,8 +9,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+// TODO:Fix in subsequent steps
 @Component
-public class AccountCreditedReplayEventHandler implements ReplayAware {
+public class AccountCreditedReplayEventHandler {
 
     List<String> audit = new ArrayList<>();
 
@@ -32,16 +33,13 @@ public class AccountCreditedReplayEventHandler implements ReplayAware {
         return audit;
     }
 
-    @Override
     public void beforeReplay() {
         audit.clear();
     }
 
-    @Override
     public void afterReplay() {
     }
 
-    @Override
     public void onReplayFailed(Throwable cause) {}
 
     private String formatTimestampToString(long timestamp) {

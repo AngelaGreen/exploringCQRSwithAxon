@@ -52,6 +52,12 @@
 			<version>${axon-core.version}</version>
 		</dependency>
 
+		<dependency>
+			<groupId>org.axonframework</groupId>
+			<artifactId>axon-spring</artifactId>
+			<version>${axon-core.version}</version>
+		</dependency>
+
 
 		<dependency>
 			<groupId>org.webjars</groupId>
