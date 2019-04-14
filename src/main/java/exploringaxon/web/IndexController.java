@@ -3,6 +3,7 @@ package exploringaxon.web;
 import exploringaxon.api.command.CreditAccountCommand;
 import exploringaxon.api.command.DebitAccountCommand;
 import exploringaxon.replay.AccountCreditedReplayEventHandler;
+import exploringaxon.replay.ReplayService;
 import org.axonframework.commandhandling.callbacks.LoggingCallback;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,9 @@ public class IndexController {
 
     @Autowired
     AccountCreditedReplayEventHandler replayEventHandler;
+
+    @Autowired
+    ReplayService replayService;
 
 
     @Autowired
@@ -59,11 +63,10 @@ public class IndexController {
         commandGateway.send(creditAccountCommandCommand, LoggingCallback.INSTANCE);
     }
 
-//    TODO:Fix in subsequent steps
-//    @RequestMapping("/events")
-//    public String doReplay(Model model) {
-//        replayCluster.startReplay();
-//        model.addAttribute("events",replayEventHandler.getAudit());
-//        return "events";
-//    }
+    @RequestMapping("/events")
+    public String doReplay(Model model) {
+        replayService.startReplay("replayProcessor");
+        model.addAttribute("events",replayEventHandler.getAudit());
+        return "events";
+    }
 }

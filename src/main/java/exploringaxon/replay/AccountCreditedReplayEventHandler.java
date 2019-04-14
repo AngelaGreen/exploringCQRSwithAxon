@@ -2,6 +2,7 @@ package exploringaxon.replay;
 
 import exploringaxon.api.event.AccountCreditedEvent;
 import exploringaxon.api.event.AccountDebitedEvent;
+import org.axonframework.config.ProcessingGroup;
 import org.axonframework.eventhandling.EventHandler;
 import org.springframework.stereotype.Component;
 
@@ -9,8 +10,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-// TODO:Fix in subsequent steps
+
 @Component
+@ProcessingGroup("replayProcessor")
 public class AccountCreditedReplayEventHandler {
 
     List<String> audit = new ArrayList<>();

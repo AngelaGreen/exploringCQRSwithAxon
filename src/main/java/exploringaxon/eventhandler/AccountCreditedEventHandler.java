@@ -1,6 +1,7 @@
 package exploringaxon.eventhandler;
 
 import exploringaxon.api.event.AccountCreditedEvent;
+import org.axonframework.config.ProcessingGroup;
 import org.axonframework.eventhandling.EventHandler;
 import org.axonframework.eventhandling.Timestamp;
 import org.axonframework.messaging.Message;
@@ -15,6 +16,7 @@ import java.time.Instant;
  * Created by Dadepo Aderemi.
  */
 @Component
+@ProcessingGroup("normalProcessor")
 public class AccountCreditedEventHandler {
 
     @Autowired

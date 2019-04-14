@@ -10,8 +10,9 @@ public class ExploringAxonApplication {
 
     @Autowired
     public void configure(EventProcessingConfiguration configuration) {
-        configuration.usingTrackingProcessors();
+        configuration.registerTrackingEventProcessor("normalProcessor");
     }
+
 
     public static void main(String[] args) {
         SpringApplication.run(ExploringAxonApplication.class, args);

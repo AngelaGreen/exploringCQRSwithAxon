@@ -1,6 +1,7 @@
 package exploringaxon.eventhandler;
 
 import exploringaxon.api.event.AccountDebitedEvent;
+import org.axonframework.config.ProcessingGroup;
 import org.axonframework.eventhandling.EventHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -12,6 +13,7 @@ import javax.sql.DataSource;
  * Created by Dadepo Aderemi.
  */
 @Component
+@ProcessingGroup("normalProcessor")
 public class AccountDebitedEventHandler {
 
     @Autowired
